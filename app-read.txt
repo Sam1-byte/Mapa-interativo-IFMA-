@@ -1,0 +1,1018 @@
+[/workspaces/default/code/src/App.tsx#c4c4]
+1:import { useState, useRef, useCallback } from "react"
+2:
+3:const LOCATIONS = [
+4:  {
+5:    id: 1,
+6:    name: "Biblioteca",
+7:    block: "Bloco A",
+8:    floor: "Térreo",
+9:    type: "service",
+10:    x: 180,
+11:    y: 160,
+12:    w: 100,
+13:    h: 70,
+14:  },
+15:  {
+16:    id: 2,
+17:    name: "Sala 101",
+18:    block: "Bloco A",
+19:    floor: "1º andar",
+20:    type: "classroom",
+21:    x: 180,
+22:    y: 240,
+23:    w: 45,
+24:    h: 40,
+25:  },
+26:  {
+27:    id: 3,
+28:    name: "Sala 102",
+29:    block: "Bloco A",
+30:    floor: "1º andar",
+31:    type: "classroom",
+32:    x: 235,
+33:    y: 240,
+34:    w: 45,
+35:    h: 40,
+36:  },
+37:  {
+38:    id: 4,
+39:    name: "Sala 103",
+40:    block: "Bloco A",
+41:    floor: "1º andar",
+42:    type: "classroom",
+43:    x: 180,
+44:    y: 290,
+45:    w: 45,
+46:    h: 40,
+47:  },
+48:  {
+49:    id: 5,
+50:    name: "Sala 201",
+51:    block: "Bloco B",
+52:    floor: "2º andar",
+53:    type: "classroom",
+54:    x: 390,
+55:    y: 130,
+56:    w: 45,
+57:    h: 40,
+58:  },
+59:  {
+60:    id: 6,
+61:    name: "Sala 202",
+62:    block: "Bloco B",
+63:    floor: "2º andar",
+64:    type: "classroom",
+65:    x: 445,
+66:    y: 130,
+67:    w: 45,
+68:    h: 40,
+69:  },
+70:  {
+71:    id: 7,
+72:    name: "Sala 204",
+73:    block: "Bloco B",
+74:    floor: "2º andar",
+75:    type: "classroom",
+76:    x: 390,
+77:    y: 180,
+78:    w: 45,
+79:    h: 40,
+80:  },
+81:  {
+82:    id: 8,
+83:    name: "Sala 205",
+84:    block: "Bloco B",
+85:    floor: "2º andar",
+86:    type: "classroom",
+87:    x: 445,
+88:    y: 180,
+89:    w: 45,
+90:    h: 40,
+91:  },
+92:  {
+93:    id: 9,
+94:    name: "Laboratório de Informática",
+95:    block: "Bloco C",
+96:    floor: "1º andar",
+97:    type: "lab",
+98:    x: 370,
+99:    y: 310,
+100:    w: 110,
+101:    h: 60,
+102:  },
+103:  {
+104:    id: 10,
+105:    name: "Laboratório de Química",
+106:    block: "Bloco C",
+107:    floor: "1º andar",
+108:    type: "lab",
+109:    x: 490,
+110:    y: 310,
+111:    w: 90,
+112:    h: 60,
+113:  },
+114:  {
+115:    id: 11,
+116:    name: "Auditório",
+117:    block: "Bloco D",
+118:    floor: "Térreo",
+119:    type: "auditorium",
+120:    x: 180,
+121:    y: 390,
+122:    w: 130,
+123:    h: 80,
+124:  },
+125:  {
+126:    id: 12,
+127:    name: "Restaurante",
+128:    block: "Bloco E",
+129:    floor: "Térreo",
+130:    type: "service",
+131:    x: 390,
+132:    y: 420,
+133:    w: 100,
+134:    h: 65,
+135:  },
+136:  {
+137:    id: 13,
+138:    name: "Coordenação Geral",
+139:    block: "Bloco A",
+140:    floor: "2º andar",
+141:    type: "admin",
+142:    x: 180,
+143:    y: 160,
+144:    w: 100,
+145:    h: 70,
+146:  },
+147:  {
+148:    id: 14,
+149:    name: "Secretaria",
+150:    block: "Bloco A",
+151:    floor: "Térreo",
+152:    type: "admin",
+153:    x: 180,
+154:    y: 160,
+155:    w: 100,
+156:    h: 70,
+157:  },
+158:  {
+159:    id: 15,
+160:    name: "Banheiros",
+161:    block: "Bloco A",
+162:    floor: "Térreo",
+163:    type: "service",
+164:    x: 295,
+165:    y: 240,
+166:    w: 40,
+167:    h: 40,
+168:  },
+169:  {
+170:    id: 16,
+171:    name: "Sala dos Professores",
+172:    block: "Bloco B",
+173:    floor: "1º andar",
+174:    type: "admin",
+175:    x: 500,
+176:    y: 180,
+177:    w: 90,
+178:    h: 60,
+179:  },
+180:  {
+181:    id: 17,
+182:    name: "Cantina",
+183:    block: "Área Externa",
+184:    floor: "Térreo",
+185:    type: "service",
+186:    x: 310,
+187:    y: 390,
+188:    w: 60,
+189:    h: 50,
+190:  },
+191:  {
+192:    id: 18,
+193:    name: "Quadra Esportiva",
+194:    block: "Área Externa",
+195:    floor: "Térreo",
+196:    type: "sport",
+197:    x: 590,
+198:    y: 160,
+199:    w: 110,
+200:    h: 140,
+201:  },
+202:  {
+203:    id: 19,
+204:    name: "Estacionamento",
+205:    block: "Entrada",
+206:    floor: "Térreo",
+207:    type: "parking",
+208:    x: 60,
+209:    y: 390,
+210:    w: 100,
+211:    h: 80,
+212:  },
+213:]
+214:
+215:type LocationType = typeof LOCATIONS[number]
+216:
+217:const TYPE_COLORS: Record<string, {
+218:  fill: string
+219:  stroke: string
+220:  label: string
+221:}> = {
+222:  classroom: { fill: "#f0fdf4", stroke: "#86efac", label: "Sala de Aula" },
+223:  lab: { fill: "#fef2f2", stroke: "#fca5a5", label: "Laboratório" },
+224:  service: { fill: "#ffffff", stroke: "#e5e7eb", label: "Serviço" },
+225:  admin: { fill: "#fee2e2", stroke: "#f87171", label: "Administrativo" },
+226:  auditorium: { fill: "#dcfce7", stroke: "#4ade80", label: "Auditório" },
+227:  sport: { fill: "#bbf7d0", stroke: "#22c55e", label: "Esporte" },
+228:  parking: { fill: "#f3f4f6", stroke: "#d1d5db", label: "Estacionamento" },
+229:}
+230:
+231:function typeIcon(type: string) {
+232:  switch (type) {
+233:    case "classroom":
+234:      return "📚"
+235:    case "lab":
+236:      return "🔬"
+237:    case "service":
+238:      return "🍽️"
+239:    case "admin":
+240:      return "🏛️"
+241:    case "auditorium":
+242:      return "🎭"
+243:    case "sport":
+244:      return "⚽"
+245:    case "parking":
+246:      return "🅿️"
+247:    default:
+248:      return "📍"
+249:  }
+250:}
+251:
+252:function CampusMap({
+253:  selected,
+254:  onSelect,
+255:  zoom,
+256:}: {
+257:  selected: LocationType | null
+258:  onSelect: (loc: LocationType) => void
+259:  zoom: number
+260:}) {
+261:  const [pan, setPan] = useState({ x: 0, y: 0 })
+262:  const dragging = useRef(false)
+263:  const dragStart = useRef({ x: 0, y: 0 })
+264:  const panStart = useRef({ x: 0, y: 0 })
+265:
+266:  const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+267:    if ((e.target as SVGElement).closest("[data-building]")) return
+268:    dragging.current = true
+269:    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX
+270:    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY
+271:    dragStart.current = { x: clientX, y: clientY }
+272:    panStart.current = { ...pan }
+273:  }
+274:
+275:  const handleMouseMove = useCallback(
+276:    (e: React.MouseEvent | React.TouchEvent) => {
+277:      if (!dragging.current) return
+278:      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX
+279:      const clientY = "touches" in e ? e.touches[0].clientY : e.clientY
+280:      setPan({
+281:        x: panStart.current.x + (clientX - dragStart.current.x),
+282:        y: panStart.current.y + (clientY - dragStart.current.y),
+283:      })
+284:    },
+285:    [],
+286:  )
+287:
+288:  const handleMouseUp = () => {
+289:    dragging.current = false
+290:  }
+291:
+292:  const viewW = 740
+293:  const viewH = 540
+294:
+295:  return (
+296:    <svg
+297:      viewBox={`0 0 ${viewW} ${viewH}`}
+298:      className="w-full h-full cursor-grab active:cursor-grabbing select-none"
+299:      style={{ background: "transparent" }}
+300:      onMouseDown={handleMouseDown}
+301:      onMouseMove={handleMouseMove}
+302:      onMouseUp={handleMouseUp}
+303:      onMouseLeave={handleMouseUp}
+304:      onTouchStart={handleMouseDown}
+305:      onTouchMove={handleMouseMove}
+306:      onTouchEnd={handleMouseUp}
+307:      onTouchCancel={handleMouseUp}
+308:    >
+309:      <g
+310:        transform={`translate(${pan.x},${pan.y}) scale(${zoom})`}
+311:        style={{ transformOrigin: "50% 50%" }}
+312:      >
+313:        {/* Ground / campus area */}
+314:        <rect
+315:          x="40"
+316:          y="80"
+317:          width="660"
+318:          height="430"
+319:          rx="8"
+320:          fill="#f0fdf4"
+321:          stroke="#bbf7d0"
+322:          strokeWidth="1.5"
+323:        />
+324:
+325:        {/* Paths / circulation */}
+326:        <rect x="155" y="80" width="18" height="430" fill="#ffffff" />
+327:        <rect x="350" y="80" width="18" height="430" fill="#ffffff" />
+328:        <rect x="40" y="355" width="660" height="18" fill="#ffffff" />
+329:        <rect x="40" y="235" width="320" height="18" fill="#ffffff" />
+330:        <rect x="368" y="285" width="332" height="18" fill="#ffffff" />
+331:
+332:        {/* Entrance arrow */}
+333:        <text
+334:          x="50"
+335:          y="75"
+336:          fontSize="11"
+337:          fill="#6b7280"
+338:          fontFamily="Inter, sans-serif"
+339:          fontWeight="500"
+340:        >
+341:          ENTRADA PRINCIPAL
+342:        </text>
+343:        <line
+344:          x1="80"
+345:          y1="78"
+346:          x2="80"
+347:          y2="90"
+348:          stroke="#16a34a"
+349:          strokeWidth="2"
+350:          markerEnd="url(#arrow)"
+351:        />
+352:        <defs>
+353:          <marker
+354:            id="arrow"
+355:            markerWidth="6"
+356:            markerHeight="6"
+357:            refX="3"
+358:            refY="3"
+359:            orient="auto"
+360:          >
+361:            <path d="M0,0 L6,3 L0,6 Z" fill="#16a34a" />
+362:          </marker>
+363:        </defs>
+364:
+365:        {/* Bloco A label */}
+366:        <rect
+367:          x="165"
+368:          y="95"
+369:          width="170"
+370:          height="250"
+371:          rx="4"
+372:          fill="#f8fafc"
+373:          stroke="#cbd5e1"
+374:          strokeWidth="1"
+375:          strokeDasharray="4 3"
+376:        />
+377:        <text
+378:          x="250"
+379:          y="112"
+380:          textAnchor="middle"
+381:          fontSize="10"
+382:          fill="#64748b"
+383:          fontFamily="Inter, sans-serif"
+384:          fontWeight="600"
+385:          letterSpacing="1"
+386:        >
+387:          BLOCO A
+388:        </text>
+389:
+390:        {/* Bloco B label */}
+391:        <rect
+392:          x="370"
+393:          y="95"
+394:          width="215"
+395:          height="240"
+396:          rx="4"
+397:          fill="#f8fafc"
+398:          stroke="#cbd5e1"
+399:          strokeWidth="1"
+400:          strokeDasharray="4 3"
+401:        />
+402:        <text
+403:          x="477"
+404:          y="112"
+405:          textAnchor="middle"
+406:          fontSize="10"
+407:          fill="#64748b"
+408:          fontFamily="Inter, sans-serif"
+409:          fontWeight="600"
+410:          letterSpacing="1"
+411:        >
+412:          BLOCO B
+413:        </text>
+414:
+415:        {/* Bloco C label */}
+416:        <rect
+417:          x="370"
+418:          y="280"
+419:          width="240"
+420:          height="65"
+421:          rx="4"
+422:          fill="#f8fafc"
+423:          stroke="#cbd5e1"
+424:          strokeWidth="1"
+425:          strokeDasharray="4 3"
+426:        />
+427:        <text
+428:          x="490"
+429:          y="297"
+430:          textAnchor="middle"
+431:          fontSize="10"
+432:          fill="#64748b"
+433:          fontFamily="Inter, sans-serif"
+434:          fontWeight="600"
+435:          letterSpacing="1"
+436:        >
+437:          BLOCO C
+438:        </text>
+439:
+440:        {/* Bloco D label */}
+441:        <rect
+442:          x="165"
+443:          y="370"
+444:          width="165"
+445:          height="110"
+446:          rx="4"
+447:          fill="#f8fafc"
+448:          stroke="#cbd5e1"
+449:          strokeWidth="1"
+450:          strokeDasharray="4 3"
+451:        />
+452:        <text
+453:          x="247"
+454:          y="387"
+455:          textAnchor="middle"
+456:          fontSize="10"
+457:          fill="#64748b"
+458:          fontFamily="Inter, sans-serif"
+459:          fontWeight="600"
+460:          letterSpacing="1"
+461:        >
+462:          BLOCO D
+463:        </text>
+464:
+465:        {/* Buildings */}
+466:        {LOCATIONS.map((loc) => {
+467:          const isSelected = selected?.id === loc.id
+468:          const colors = TYPE_COLORS[loc.type] || TYPE_COLORS.classroom
+469:          return (
+470:            <g
+471:              key={loc.id}
+472:              data-building="true"
+473:              onClick={() => onSelect(loc)}
+474:              style={{ cursor: "pointer" }}
+475:            >
+476:              <rect
+477:                x={loc.x}
+478:                y={loc.y}
+479:                width={loc.w}
+480:                height={loc.h}
+481:                rx="3"
+482:                fill={isSelected ? "#dc2626" : colors.fill}
+483:                stroke={isSelected ? "#991b1b" : colors.stroke}
+484:                strokeWidth={isSelected ? 2 : 1}
+485:                style={{ transition: "fill 0.15s, stroke 0.15s" }}
+486:              />
+487:              {isSelected && (
+488:                <>
+489:                  <rect
+490:                    x={loc.x - 3}
+491:                    y={loc.y - 3}
+492:                    width={loc.w + 6}
+493:                    height={loc.h + 6}
+494:                    rx="5"
+495:                    fill="none"
+496:                    stroke="#dc2626"
+497:                    strokeWidth="2"
+498:                    strokeDasharray="4 3"
+499:                    opacity="0.6"
+500:                  />
+501:                  {/* Pin */}
+502:                  <circle
+503:                    cx={loc.x + loc.w / 2}
+504:                    cy={loc.y - 12}
+505:                    r="9"
+506:                    fill="#dc2626"
+507:                  />
+508:                  <text
+509:                    x={loc.x + loc.w / 2}
+510:                    y={loc.y - 8}
+511:                    textAnchor="middle"
+512:                    fontSize="10"
+513:                    fill="white"
+514:                  >
+515:                    ★
+516:                  </text>
+517:                </>
+518:              )}
+519:              <text
+520:                x={loc.x + loc.w / 2}
+521:                y={loc.y + loc.h / 2 + (loc.h > 50 ? -6 : 4)}
+522:                textAnchor="middle"
+523:                fontSize={loc.w > 80 ? "9" : "8"}
+524:                fill={isSelected ? "white" : "#374151"}
+525:                fontFamily="Inter, sans-serif"
+526:                fontWeight="500"
+527:                style={{ pointerEvents: "none" }}
+528:              >
+529:                {loc.name.length > 16 ? loc.name.slice(0, 14) + "…" : loc.name}
+530:              </text>
+531:              {loc.h > 50 && (
+532:                <text
+533:                  x={loc.x + loc.w / 2}
+534:                  y={loc.y + loc.h / 2 + 8}
+535:                  textAnchor="middle"
+536:                  fontSize="8"
+537:                  fill={isSelected ? "#fecaca" : "#6b7280"}
+538:                  fontFamily="Inter, sans-serif"
+539:                  style={{ pointerEvents: "none" }}
+540:                >
+541:                  {loc.floor}
+542:                </text>
+543:              )}
+544:            </g>
+545:          )
+546:        })}
+547:
+548:        {/* User position marker */}
+549:        <g>
+550:          <circle cx="100" cy="200" r="10" fill="#dc2626" opacity="0.2" />
+551:          <circle
+552:            cx="100"
+553:            cy="200"
+554:            r="6"
+555:            fill="#dc2626"
+556:            stroke="white"
+557:            strokeWidth="2"
+558:          />
+559:          <text
+560:            x="115"
+561:            y="198"
+562:            fontSize="8"
+563:            fill="#dc2626"
+564:            fontFamily="Inter,sans-serif"
+565:            fontWeight="600"
+566:          >
+567:            Você está aqui
+568:          </text>
+569:        </g>
+570:
+571:        {/* Compass */}
+572:        <g transform="translate(680, 100)">
+573:          <circle
+574:            cx="0"
+575:            cy="0"
+576:            r="18"
+577:            fill="white"
+578:            stroke="#e2e8f0"
+579:            strokeWidth="1"
+580:          />
+581:          <text
+582:            x="0"
+583:            y="-5"
+584:            textAnchor="middle"
+585:            fontSize="9"
+586:            fill="#dc2626"
+587:            fontWeight="700"
+588:            fontFamily="Inter,sans-serif"
+589:          >
+590:            N
+591:          </text>
+592:          <line
+593:            x1="0"
+594:            y1="-14"
+595:            x2="0"
+596:            y2="14"
+597:            stroke="#e2e8f0"
+598:            strokeWidth="0.8"
+599:          />
+600:          <line
+601:            x1="-14"
+602:            y1="0"
+603:            x2="14"
+604:            y2="0"
+605:            stroke="#e2e8f0"
+606:            strokeWidth="0.8"
+607:          />
+608:          <polygon points="0,-12 3,-2 0,2 -3,-2" fill="#dc2626" />
+609:          <polygon points="0,12 3,2 0,-2 -3,2" fill="#e5e7eb" />
+610:        </g>
+611:      </g>
+612:    </svg>
+613:  )
+614:}
+615:
+616:function SearchIcon() {
+617:  return (
+618:    <svg
+619:      width="16"
+620:      height="16"
+621:      viewBox="0 0 24 24"
+622:      fill="none"
+623:      stroke="currentColor"
+624:      strokeWidth="2"
+625:      strokeLinecap="round"
+626:      strokeLinejoin="round"
+627:    >
+628:      <circle cx="11" cy="11" r="8" />
+629:      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+630:    </svg>
+631:  )
+632:}
+633:
+634:function XIcon() {
+635:  return (
+636:    <svg
+637:      width="14"
+638:      height="14"
+639:      viewBox="0 0 24 24"
+640:      fill="none"
+641:      stroke="currentColor"
+642:      strokeWidth="2.5"
+643:      strokeLinecap="round"
+644:    >
+645:      <line x1="18" y1="6" x2="6" y2="18" />
+646:      <line x1="6" y1="6" x2="18" y2="18" />
+647:    </svg>
+648:  )
+649:}
+650:
+651:export default function App() {
+652:  const [activeTab, setActiveTab] = useState<"mapa" | "acesso" | "sobre">("mapa")
+653:  const [query, setQuery] = useState("")
+654:  const [selected, setSelected] = useState<LocationType | null>(null)
+655:  const [zoom, setZoom] = useState(1)
+656:  const [showLegend, setShowLegend] = useState(false)
+657:  const inputRef = useRef<HTMLInputElement>(null)
+658:
+659:  const filtered =
+660:    query.trim().length > 0
+661:      ? LOCATIONS.filter(
+662:          (l) =>
+663:            l.name.toLowerCase().includes(query.toLowerCase()) ||
+664:            l.block.toLowerCase().includes(query.toLowerCase()) ||
+665:            l.floor.toLowerCase().includes(query.toLowerCase()) ||
+666:            (TYPE_COLORS[l.type]?.label || "")
+667:              .toLowerCase()
+668:              .includes(query.toLowerCase()),
+669:        )
+670:      : []
+671:
+672:  const handleSelect = (loc: LocationType) => {
+673:    setSelected(loc)
+674:    setQuery(loc.name)
+675:  }
+676:
+677:  const handleClear = () => {
+678:    setQuery("")
+679:    setSelected(null)
+680:    inputRef.current?.focus()
+681:  }
+682:
+683:  const handleZoomIn = () => setZoom((z) => Math.min(z + 0.2, 2.5))
+684:  const handleZoomOut = () => setZoom((z) => Math.max(z - 0.2, 0.4))
+685:  const handleReset = () => {
+686:    setZoom(1)
+687:  }
+688:
+689:  const showResults = query.trim().length > 0 && !selected
+690:  const noResults = showResults && filtered.length === 0
+691:
+692:  return (
+693:    <div
+694:      className="flex flex-col h-full bg-slate-50"
+695:      style={{ fontFamily: "'Inter', sans-serif" }}
+696:    >
+697:      {/* Header */}
+698:      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-5 py-3 bg-white border-b border-slate-200 shrink-0 shadow-sm z-10">
+699:        <div className="flex items-center gap-3">
+700:          {/* IFMA Logo mark */}
+701:          <div className="flex flex-col items-center justify-center shrink-0 w-10 h-10 rounded-md bg-[#1a6b3c]">
+702:            <span className="text-white text-sm font-bold leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>IF</span>
+703:            <span className="text-white text-[9px] font-bold leading-none tracking-widest" style={{ fontFamily: "'Outfit', sans-serif" }}>MA</span>
+704:          </div>
+705:          <div className="min-w-0 border-l border-slate-200 pl-3">
+706:            <div
+707:              style={{ fontFamily: "'Outfit', sans-serif" }}
+708:              className="text-sm text-slate-800 leading-none tracking-tight font-bold truncate"
+709:            >
+710:              Mapa do Campus
+711:            </div>
+712:          </div>
+713:        </div>
+714:        <div className="flex items-center gap-2 self-end sm:self-auto">
+715:          <span className="text-xs text-slate-400 bg-slate-100 rounded px-2 py-1">
+716:            MVP v1.0
+717:          </span>
+718:        </div>
+719:      </header>
+720:
+721:      {/* Tab bar */}
+722:      <div className="flex items-end gap-0 px-5 bg-white border-b border-slate-200 shrink-0">
+723:        {(
+724:          [
+725:            { id: "mapa", label: "Mapa do Campus", icon: "🗺️" },
+726:            { id: "acesso", label: "Acesso Rápido", icon: "⚡" },
+727:            { id: "sobre", label: "Sobre", icon: "ℹ️" },
+728:          ] as const
+729:        ).map((tab) => (
+730:          <button
+731:            key={tab.id}
+732:            onClick={() => setActiveTab(tab.id)}
+733:            className={[
+734:              "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors",
+735:              activeTab === tab.id
+736:                ? "border-[#1a6b3c] text-[#1a6b3c]"
+737:                : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300",
+738:            ].join(" ")}
+739:          >
+740:            <span className="text-base leading-none">{tab.icon}</span>
+741:            {tab.label}
+742:          </button>
+743:        ))}
+744:      </div>
+745:
+746:      {activeTab === "acesso" && (
+747:        <div className="flex-1 overflow-y-auto bg-slate-50">
+748:          <div className="max-w-2xl mx-auto px-5 py-6 space-y-5">
+749:
+750:            {/* Search */}
+751:            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+752:              <div className="px-5 py-4 border-b border-slate-100">
+753:                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Buscar local</p>
+754:              </div>
+755:              <div className="px-5 py-4">
+756:                <div className="relative">
+757:                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+758:                    <SearchIcon />
+759:                  </span>
+760:                  <input
+761:                    ref={inputRef}
+762:                    value={query}
+763:                    onChange={(e) => { setQuery(e.target.value); setSelected(null) }}
+764:                    placeholder="Nome, bloco ou tipo de espaço…"
+765:                    className="w-full pl-9 pr-8 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1a6b3c]/30 focus:border-[#1a6b3c] transition-all"
+766:                  />
+767:                  {query && (
+768:                    <button onClick={handleClear} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+769:                      <XIcon />
+770:                    </button>
+771:                  )}
+772:                </div>
+773:                {showResults && filtered.length > 0 && (
+774:                  <div className="mt-3 space-y-0.5">
+775:                    <p className="text-xs text-slate-400 px-1 pb-1">
+776:                      {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
+777:                    </p>
+778:                    {filtered.map((loc) => (
+779:                      <button
+780:                        key={loc.id}
+781:                        onClick={() => { handleSelect(loc); setActiveTab("mapa") }}
+782:                        className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-3 group"
+783:                      >
+784:                        <span className="text-base shrink-0">{typeIcon(loc.type)}</span>
+785:                        <div className="min-w-0">
+786:                          <p className="text-sm font-medium text-slate-700 truncate group-hover:text-slate-900">{loc.name}</p>
+787:                          <p className="text-xs text-slate-400">{loc.block} · {loc.floor}</p>
+788:                        </div>
+789:                        <svg className="w-3 h-3 text-slate-300 shrink-0 ml-auto group-hover:text-[#1a6b3c]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+790:                          <polyline points="9 18 15 12 9 6" />
+791:                        </svg>
+792:                      </button>
+793:                    ))}
+794:                  </div>
+795:                )}
+796:                {noResults && (
+797:                  <div className="mt-4 text-center py-4">
+798:                    <div className="text-2xl mb-2">🔍</div>
+799:                    <p className="text-sm font-medium text-slate-600">Nenhum local encontrado</p>
+800:                    <p className="text-xs text-slate-400 mt-1">Tente outro nome, bloco ou tipo</p>
+801:                  </div>
+802:                )}
+803:              </div>
+804:            </div>
+805:
+806:            {/* User location */}
+807:            <div className="bg-white rounded-2xl border border-slate-200 px-5 py-4 flex items-center gap-4">
+808:              <div className="relative shrink-0">
+809:                <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center">
+810:                  <div className="w-3 h-3 rounded-full bg-red-600 ring-2 ring-red-200" />
+811:                </div>
+812:              </div>
+813:              <div>
+814:                <p className="text-sm font-semibold text-slate-800">Sua localização atual</p>
+815:                <p className="text-xs text-slate-400 mt-0.5">Próximo à Entrada Principal</p>
+816:              </div>
+817:            </div>
+818:
+819:            {/* Quick shortcuts */}
+820:            <div>
+821:              <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest px-1 pb-3">Atalhos principais</p>
+822:              <div className="space-y-2">
+823:                {[1, 9, 11, 12, 18, 19].map((id) => {
+824:                  const loc = LOCATIONS.find((l) => l.id === id)!
+825:                  return (
+826:                    <button
+827:                      key={id}
+828:                      onClick={() => { handleSelect(loc); setActiveTab("mapa") }}
+829:                      className="w-full text-left bg-white border border-slate-200 rounded-2xl px-5 py-4 hover:border-[#1a6b3c]/40 hover:shadow-sm transition-all flex items-center gap-4 group"
+830:                    >
+831:                      <span className="text-2xl shrink-0">{typeIcon(loc.type)}</span>
+832:                      <div className="min-w-0 flex-1">
+833:                        <p className="text-sm font-semibold text-slate-800 truncate">{loc.name}</p>
+834:                        <p className="text-xs text-slate-400 mt-0.5">{loc.block} · {loc.floor}</p>
+835:                      </div>
+836:                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0 group-hover:bg-[#1a6b3c]/10 group-hover:text-[#1a6b3c] transition-colors">
+837:                        {TYPE_COLORS[loc.type]?.label}
+838:                      </span>
+839:                      <svg className="w-4 h-4 text-slate-300 shrink-0 group-hover:text-[#1a6b3c] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+840:                        <polyline points="9 18 15 12 9 6" />
+841:                      </svg>
+842:                    </button>
+843:                  )
+844:                })}
+845:              </div>
+846:            </div>
+847:
+848:          </div>
+849:        </div>
+850:      )}
+851:
+852:      {activeTab === "sobre" && (
+853:        <div className="flex-1 overflow-y-auto bg-slate-50">
+854:          <div className="max-w-2xl mx-auto px-5 py-8 space-y-6">
+855:
+856:            {/* Identity hero */}
+857:            <div className="bg-[#1a6b3c] rounded-2xl px-6 py-7 flex items-center gap-5">
+858:              <div className="flex flex-col items-center justify-center w-16 h-16 rounded-xl bg-white/15 shrink-0">
+859:                <span className="text-white text-xl font-bold leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>IF</span>
+860:                <span className="text-white text-[11px] font-bold leading-none tracking-widest" style={{ fontFamily: "'Outfit', sans-serif" }}>MA</span>
+861:              </div>
+862:              <div>
+863:                <h1 className="text-white text-lg font-bold leading-snug" style={{ fontFamily: "'Outfit', sans-serif" }}>
+864:                  Mapa Virtual do Campus
+865:                </h1>
+866:                <p className="text-green-200 text-xs mt-1">Instituto Federal do Maranhão</p>
+867:              </div>
+868:            </div>
+869:
+870:            {/* About text */}
+871:            <div className="bg-white rounded-2xl border border-slate-200 px-6 py-5">
+872:              <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Sobre o projeto</p>
+873:              <p className="text-sm text-slate-600 leading-relaxed">
+874:                Ferramenta de navegação interna desenvolvida para facilitar o acesso a salas, laboratórios, serviços e demais espaços do campus — pensada para alunos, servidores e visitantes.
+875:              </p>
+876:            </div>
+877:
+878:            {/* Legend */}
+879:            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+880:              <div className="px-6 py-4 border-b border-slate-100">
+881:                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Legenda dos espaços</p>
+882:              </div>
+883:              <div className="px-6 py-4 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-3">
+884:                {Object.entries(TYPE_COLORS).map(([type, cfg]) => (
+885:                  <div key={type} className="flex items-center gap-2.5">
+886:                    <div className="w-4 h-3.5 rounded-sm border shrink-0" style={{ background: cfg.fill, borderColor: cfg.stroke }} />
+887:                    <span className="text-xs text-slate-600">{cfg.label}</span>
+888:                  </div>
+889:                ))}
+890:                <div className="flex items-center gap-2.5">
+891:                  <div className="w-4 h-3.5 rounded-sm border-2 shrink-0" style={{ background: "#dc2626", borderColor: "#991b1b" }} />
+892:                  <span className="text-xs text-slate-600">Selecionado</span>
+893:                </div>
+894:              </div>
+895:            </div>
+896:
+897:            {/* Version */}
+898:            <div className="flex items-center justify-between px-1">
+899:              <p className="text-xs text-slate-400">MVP v1.0 — Protótipo inicial</p>
+900:              <p className="text-xs text-slate-400">{LOCATIONS.length} espaços mapeados</p>
+901:            </div>
+902:
+903:          </div>
+904:        </div>
+905:      )}
+906:
+907:      {activeTab === "mapa" && <main className="flex-1 relative overflow-hidden bg-slate-100">
+908:          {/* Map background */}
+909:          <div
+910:            className="absolute inset-0"
+911:            style={{
+912:              backgroundImage:
+913:                "radial-gradient(circle at 1px 1px, #d1d5db 1px, transparent 0)",
+914:              backgroundSize: "24px 24px",
+915:            }}
+916:          />
+917:
+918:          {/* Map canvas */}
+919:          <div className="absolute inset-0 flex items-center justify-center p-3 md:p-6">
+920:            <div className="w-full h-full rounded-2xl overflow-hidden shadow-xl border border-slate-200/60 bg-white/90 backdrop-blur-sm">
+921:              <CampusMap
+922:                selected={selected}
+923:                onSelect={handleSelect}
+924:                zoom={zoom}
+925:              />
+926:            </div>
+927:          </div>
+928:
+929:          {/* Zoom controls */}
+930:          <div className="absolute right-3 md:right-6 bottom-3 md:bottom-6 flex flex-col gap-1.5 z-10">
+931:            <button
+932:              onClick={handleZoomIn}
+933:              className="w-9 h-9 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors font-semibold text-base"
+934:              title="Ampliar"
+935:            >
+936:              +
+937:            </button>
+938:            <button
+939:              onClick={handleZoomOut}
+940:              className="w-9 h-9 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors font-semibold text-base"
+941:              title="Reduzir"
+942:            >
+943:              −
+944:            </button>
+945:            <button
+946:              onClick={handleReset}
+947:              className="w-9 h-9 bg-white rounded-lg border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors text-sm"
+948:              title="Centralizar"
+949:            >
+950:              <svg
+951:                width="14"
+952:                height="14"
+953:                viewBox="0 0 24 24"
+954:                fill="none"
+955:                stroke="currentColor"
+956:                strokeWidth="2"
+957:                strokeLinecap="round"
+958:              >
+959:                <circle cx="12" cy="12" r="3" />
+960:                <line x1="12" y1="2" x2="12" y2="5" />
+961:                <line x1="12" y1="19" x2="12" y2="22" />
+962:                <line x1="2" y1="12" x2="5" y2="12" />
+963:                <line x1="19" y1="12" x2="22" y2="12" />
+964:              </svg>
+965:            </button>
+966:          </div>
+967:
+968:          {/* Selected destination toast */}
+969:          {selected && (
+970:            <div
+971:              className="absolute top-3 md:top-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full shadow-lg text-sm font-medium text-white flex items-center gap-2 animate-pulse z-10 max-w-[90%] w-max truncate"
+972:              style={{ background: "#dc2626" }}
+973:            >
+974:              <span className="shrink-0">★</span>
+975:              <span className="truncate">
+976:                {selected.name} — {selected.block}
+977:              </span>
+978:            </div>
+979:          )}
+980:
+981:          {/* Legend overlay */}
+982:          {showLegend && (
+983:            <div className="absolute left-3 md:left-4 bottom-3 md:bottom-4 bg-white rounded-xl shadow-lg border border-slate-200 p-4 min-w-44 z-10">
+984:              <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">
+985:                Legenda
+986:              </p>
+987:              <div className="space-y-2">
+988:                {Object.entries(TYPE_COLORS).map(([type, cfg]) => (
+989:                  <div key={type} className="flex items-center gap-2">
+990:                    <div
+991:                      className="w-4 h-3 rounded-sm border"
+992:                      style={{ background: cfg.fill, borderColor: cfg.stroke }}
+993:                    />
+994:                    <span className="text-xs text-slate-600">{cfg.label}</span>
+995:                  </div>
+996:                ))}
+997:                <div className="flex items-center gap-2 pt-1 border-t border-slate-100 mt-1">
+998:                  <div
+999:                    className="w-4 h-3 rounded-sm border-2"
+1000:                    style={{ background: "#dc2626", borderColor: "#991b1b" }}
+1001:                  />
+1002:                  <span className="text-xs text-slate-600">Selecionado</span>
+1003:                </div>
+1004:              </div>
+1005:            </div>
+1006:          )}
+1007:
+1008:          {/* Zoom level badge */}
+1009:          <div className="absolute right-3 md:right-6 top-3 md:top-4 bg-white/80 backdrop-blur-sm rounded-md px-2 py-1 border border-slate-200 text-xs text-slate-500 z-10">
+1010:            {Math.round(zoom * 100)}%
+1011:          </div>
+1012:      </main>}
+1013:    </div>
+1014:  )
+1015:}
+
+(End of file — 1015 lines.)

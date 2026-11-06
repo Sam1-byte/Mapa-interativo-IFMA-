@@ -1,0 +1,10 @@
+{
+  "description": "Enables users to upload and follow attached command instructions efficiently, streamlining task execution and improving workflow accuracy.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
